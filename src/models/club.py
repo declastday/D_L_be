@@ -1,6 +1,6 @@
 from __future__ import annotations
 from uuid import uuid4
-from sqlalchemy import String, Boolean, Text, Date, ForeignKey, Index
+from sqlalchemy import String, Boolean, Text, Date, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.db.base import Base, TimestampMixin
 
@@ -8,15 +8,10 @@ from src.db.base import Base, TimestampMixin
 class Club(TimestampMixin, Base):
     __tablename__ = "clubs"
 
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid4())
-    )
-    president_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("users.id"), nullable=False
-    )
-    name: Mapped[str] = mapped_column(
-        String(100), unique=True, nullable=False, index=True  # ★ 검색 인덱스
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    president_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), nullable=False)
+    name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, index=True)
+    # 'department': 학과 동아리 / 'central': 중앙 동아리
     club_type: Mapped[str | None] = mapped_column(String(20))
     description: Mapped[str | None] = mapped_column(Text)
     contact_email: Mapped[str | None] = mapped_column(String(255))
@@ -41,13 +36,8 @@ class Club(TimestampMixin, Base):
 class ClubTag(Base):
     __tablename__ = "club_tags"
 
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid4())
-    )
-    # ★ club_id 인덱스 추가 (동아리 태그 조회 시 사용)
-    club_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("clubs.id"), nullable=False, index=True
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    club_id: Mapped[str] = mapped_column(String(36), ForeignKey("clubs.id"), nullable=False)
     tag_key: Mapped[str] = mapped_column(String(50), nullable=False)
     tag_value: Mapped[str] = mapped_column(String(100), nullable=False)
 
